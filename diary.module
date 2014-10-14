@@ -1,0 +1,47 @@
+<?php
+
+function diary_diary()
+{
+	angularjs_init_application('diary');
+	drupal_add_js('https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js', 'external');
+	drupal_add_js(drupal_get_path('module', 'diary') . '/js/ui-bootstrap-tpls-0.11.0.min.js');
+	drupal_add_js(drupal_get_path('module', 'diary') . '/js/diary.js');
+
+	$output .= '<div ng-controller="DiaryCtrl">';
+	$output .= '<div class="month-current"><h1>{{monthString}}</h1></div>';
+	$output .= '<a href=""><span class="diary-month" ng-click="thismonth()">This month</span></a><div class="diary-buttons"><a href=""><span class="diary-prev-month-btn" ng-click="prevmonth()" >&lt</span></a><a href=""><span class="diary-next-month-btn" ng-click="nextmonth()" >&gt</span></a></div>';
+	$output .= '<div ng-repeat="weekevents in events">';
+	$output .= '<div class="diary-week-title"><h3>{{weekevents.week}}</h3></div>';
+	$output .= '<div class="diary-weekevents">';
+	$output .= '<div class="diary-maindays"><div ng-repeat="dayofevents in weekevents.main" ng-class="dayofevents[0].node.class">';
+	$output .= '<div class="date-title"><h3><span class="diary-day">{{dayofevents[0].node.dayofweek}}</span>, <span class="diary-date">{{dayofevents[0].node.datestr}}</span></h3></div>';
+	$output .= '<div ng-repeat="event in dayofevents" class="diary-event">';
+	$output .= '<a href="{{event.node.path}}"><span class="diary-eventtitle">{{event.node.title}} </span><span class="diary-time">{{event.node.time}}</span><span class="diary-speaker">{{event.node.field_reference}}</span></a></div>';
+	$output .= '</div>'; //ng-repeat dayofevent in weekevents.main
+	$output .= '</div>'; //diary-maindays
+	$output .= '<div class="diary-sunday"><div ng-repeat="dayofevents in weekevents.sunday" ng-class="dayofevents[0].node.class">';
+	$output .= '<div class="date-title"><h3><span class="diary-day">{{dayofevents[0].node.dayofweek}}</span>, <span class="diary-date">{{dayofevents[0].node.datestr}}</span></h3></div>';
+	$output .= '<div ng-repeat="event in dayofevents" class="diary-event">';
+	$output .= '<a href="{{event.node.path}}"><span class="diary-eventtitle">{{event.node.title}} </span><span class="diary-time">{{event.node.time}}</span><span class="diary-speaker">{{event.node.field_reference}}</span></a></div>';
+	$output .= '</div>'; //ng-repeat dayofevent in weekevents.sunday
+	$output .= '</div>'; //diary-sunday
+	$output .= '</div>'; //diary-weekevents
+	$output .= '</div></div>';
+
+	return $output;
+}
+
+function diary_menu(){
+	$items['diary'] = array(
+			'title' => 'Diary',
+			'page callback' => 'diary_diary',
+			'access arguments' => array('access content')
+			);
+	$items['diary/%/%'] = array(
+			'title' => '!mon !year',
+			'title arguments' => array("!mon" => 1, "!year" => 2),
+			'page callback' => 'diary_diary',
+			'access arguments' => array('access content')
+			);
+	return $items;
+}

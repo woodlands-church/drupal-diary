@@ -1,0 +1,8 @@
+; $Id $
+name= Woodlands Modules 
+description  = Diary 
+package = "Woodlands"
+php = 5.2
+core = "7.x"
+dependencies[] = views 
+files[] = diary.module
